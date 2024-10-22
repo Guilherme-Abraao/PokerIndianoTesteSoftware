@@ -25,12 +25,50 @@ public class JogoPokerIndiano {
     }
 
     private Jogador criarJogador(Scanner scanner) {
-        Carta carta1 = solicitarCarta(scanner, "primeira");
-        Carta carta2 = solicitarCarta(scanner, "segunda");
+        String valor1, naipe1, valor2, naipe2;
+
+        // Solicitar todas as entradas do jogador
+        System.out.println("Digite o valor da sua primeira carta (A, 2, 3... J, Q, K):");
+        valor1 = normalizarEntrada(scanner.nextLine());
+
+        System.out.println("Digite o naipe da sua primeira carta (Copas, Ouros, Paus, Espadas):");
+        naipe1 = normalizarEntrada(scanner.nextLine());
+
+        System.out.println("Digite o valor da sua segunda carta (A, 2, 3... J, Q, K):");
+        valor2 = normalizarEntrada(scanner.nextLine());
+
+        System.out.println("Digite o naipe da sua segunda carta (Copas, Ouros, Paus, Espadas):");
+        naipe2 = normalizarEntrada(scanner.nextLine());
+
+        // Fazer todas as validações
+        if (!valoresValidos.contains(valor1) || !naipesValidos.containsKey(naipe1)) {
+            System.out.println("A primeira carta é inválida. Reinicie o jogo e forneça entradas válidas.");
+            System.exit(0);
+        }
+
+        if (!valoresValidos.contains(valor2) || !naipesValidos.containsKey(naipe2)) {
+            System.out.println("A segunda carta é inválida. Reinicie o jogo e forneça entradas válidas.");
+            System.exit(0);
+        }
+
+        // Verificar se as cartas são idênticas
+        if (valor1.equals(valor2) && naipe1.equals(naipe2)) {
+            System.out.println("Você não pode escolher duas cartas idênticas. Reinicie o jogo e escolha cartas diferentes.");
+            System.exit(0);
+        }
+
+        // Criar as cartas após todas as validações
+        Carta carta1 = new Carta(valor1, naipe1);
+        Carta carta2 = new Carta(valor2, naipe2);
+
+        // Remover as cartas do baralho
         baralho.removerCarta(carta1);
         baralho.removerCarta(carta2);
+
+        // Retornar o jogador com as duas cartas válidas
         return new Jogador(carta1, carta2);
     }
+
 
     private Jogador criarSistema() {
         Carta cartaSistema1 = gerarCartaSistema();
