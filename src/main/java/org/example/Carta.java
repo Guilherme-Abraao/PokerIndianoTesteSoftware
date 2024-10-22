@@ -47,13 +47,13 @@ public class Carta {
     }
 
     private String formatarNaipe(String naipe) {
-        naipe = naipe.trim().toLowerCase(); // Remove espaços e converte para minúsculas
+        naipe = naipe.trim().toLowerCase();
         switch (naipe) {
             case "copa":
                 return "Copas";
             case "ouro":
                 return "Ouros";
-            case "paus": // Já está no plural correto
+            case "pau":
                 return "Paus";
             case "espada":
                 return "Espadas";
