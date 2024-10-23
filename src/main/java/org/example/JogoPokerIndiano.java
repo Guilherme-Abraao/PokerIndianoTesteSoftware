@@ -27,48 +27,50 @@ public class JogoPokerIndiano {
     private Jogador criarJogador(Scanner scanner) {
         String valor1, naipe1, valor2, naipe2;
 
-        // Solicitar todas as entradas do jogador
-        System.out.println("Digite o valor da sua primeira carta (A, 2, 3... J, Q, K):");
+        System.out.println("Digite o valor da sua primeira carta (A, 2, 3... 10, J, Q, K):");
         valor1 = normalizarEntrada(scanner.nextLine());
 
         System.out.println("Digite o naipe da sua primeira carta (Copas, Ouros, Paus, Espadas):");
         naipe1 = normalizarEntrada(scanner.nextLine());
 
-        System.out.println("Digite o valor da sua segunda carta (A, 2, 3... J, Q, K):");
+        System.out.println("Digite o valor da sua segunda carta (A, 2, 3... 10, J, Q, K):");
         valor2 = normalizarEntrada(scanner.nextLine());
 
         System.out.println("Digite o naipe da sua segunda carta (Copas, Ouros, Paus, Espadas):");
         naipe2 = normalizarEntrada(scanner.nextLine());
 
-        // Fazer todas as validações
-        if (!valoresValidos.contains(valor1) || !naipesValidos.containsKey(naipe1)) {
-            System.out.println("A primeira carta é inválida. Reinicie o jogo e forneça entradas válidas.");
-            System.exit(0);
-        }
+        validarEntradas(valor1, naipe1, valor2, naipe2);
 
-        if (!valoresValidos.contains(valor2) || !naipesValidos.containsKey(naipe2)) {
-            System.out.println("A segunda carta é inválida. Reinicie o jogo e forneça entradas válidas.");
-            System.exit(0);
-        }
-
-        // Verificar se as cartas são idênticas
-        if (valor1.equals(valor2) && naipe1.equals(naipe2)) {
-            System.out.println("Você não pode escolher duas cartas idênticas. Reinicie o jogo e escolha cartas diferentes.");
-            System.exit(0);
-        }
-
-        // Criar as cartas após todas as validações
         Carta carta1 = new Carta(valor1, naipe1);
         Carta carta2 = new Carta(valor2, naipe2);
 
-        // Remover as cartas do baralho
         baralho.removerCarta(carta1);
         baralho.removerCarta(carta2);
 
-        // Retornar o jogador com as duas cartas válidas
         return new Jogador(carta1, carta2);
     }
 
+    private void validarEntradas(String valor1, String naipe1, String valor2, String naipe2) {
+
+        if (!valoresValidos.contains(valor1)) {
+            System.out.println("O valor da primeira carta é inválido. Reinicie o jogo e forneça entradas válidas.");
+            System.exit(0);
+        }
+        if (!naipesValidos.containsKey(naipe1)) {
+            System.out.println("O naipe da primeira carta é inválido. Reinicie o jogo e forneça entradas válidas.");
+            System.exit(0);
+        }
+
+        if (!valoresValidos.contains(valor2)) {
+            System.out.println("O valor da segunda carta é inválido. Reinicie o jogo e forneça entradas válidas.");
+            System.exit(0);
+        }
+        if (!naipesValidos.containsKey(naipe2)) {
+            System.out.println("O naipe da segunda carta é inválido. Reinicie o jogo e forneça entradas válidas.");
+            System.exit(0);
+        }
+
+    }
 
     private Jogador criarSistema() {
         Carta cartaSistema1 = gerarCartaSistema();
@@ -90,35 +92,7 @@ public class JogoPokerIndiano {
         System.out.println("Cartas do sistema: " + sistema.getCarta1() + " e " + sistema.getCarta2() + "\n");
     }
 
-    private Carta solicitarCarta(Scanner scanner, String ordem) {
-        String valorCarta = solicitarValorCarta(scanner, ordem);
-        String naipeCarta = solicitarNaipeCarta(scanner, ordem);
-        Carta carta = new Carta(valorCarta, naipeCarta);
-        cartasUsadas.add(carta);
-        return carta;
-    }
-
-    private String solicitarValorCarta(Scanner scanner, String ordem) {
-        return solicitarEntrada(scanner, "valor da sua " + ordem + " carta (A, 2, 3... J, Q, K):", valoresValidos);
-    }
-
-    private String solicitarNaipeCarta(Scanner scanner, String ordem) {
-        return solicitarEntrada(scanner, "naipe da sua " + ordem + " carta (Copas, Ouros, Paus, Espadas):", new ArrayList<>(naipesValidos.keySet()));
-    }
-
-    private String solicitarEntrada(Scanner scanner, String mensagem, List<String> valoresValidos) {
-        String entrada;
-        do {
-            System.out.println("Digite o " + mensagem);
-            entrada = normalizarEntrada(scanner.nextLine());
-            if (!valoresValidos.contains(entrada)) {
-                System.out.println("Entrada inválida!\n");
-            }
-        } while (!valoresValidos.contains(entrada));
-        return entrada;
-    }
-
-    private String normalizarEntrada(String entrada) {
+    private static String normalizarEntrada(String entrada) {
         return entrada.trim().toUpperCase();
     }
 
@@ -176,7 +150,7 @@ public class JogoPokerIndiano {
 
     private void compararSegundasCartas() {
         Carta menorCartaJogador = jogador.getCartaDeMenorValor();
-        Carta menorCartaSistema = sistema.getCartaDeMenorValor();
+        Carta menorCartaSistema = jogador.getCartaDeMenorValor();
 
         int resultadoComparacao = compararValores(menorCartaJogador, menorCartaSistema);
         if (resultadoComparacao > 0) {
